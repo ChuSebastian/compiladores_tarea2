@@ -61,15 +61,16 @@ Token* Scanner::nextToken() {
   c = nextChar();
   while (c == ' ') c = nextChar();
   if (c == '\0') return new Token(Token::END);
-  
-  if (c == '%') {
-    cout << "% detected" << endl;
-    while (c != '\n') c = nextChar();
-    return new Token(Token::EOL);
-  }
 
   startLexema();
   state = 0;
+
+  if (c == '%') {
+    cout << "% detected" << endl;
+    while (c != '\n')c = nextChar();
+    state = 0;
+  }
+
   while (1) {
     switch (state) {
     case 0:
