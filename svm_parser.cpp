@@ -61,58 +61,64 @@ Token* Scanner::nextToken() {
   c = nextChar();
   while (c == ' ') c = nextChar();
   if (c == '\0') return new Token(Token::END);
+  
+  if (c == '%') {
+    cout << "% detected" << endl;
+    while (c != '\n') c = nextChar();
+    return new Token(Token::EOL);
+  }
+
   startLexema();
   state = 0;
   while (1) {
-      if(c == '%'){
-          cout << "% detected" << endl;
-          while (c != '\n'){
-              c = nextChar();
-          }
-          state = 0;
-      }
     switch (state) {
     case 0:
-       if (isalpha(c)) { state = 1; }
+      if (isalpha(c)) { state = 1; }
       else if (isdigit(c)) { startLexema(); state = 4; }
       else if (c == '\n') state = 6;
       else return new Token(Token::ERR, c);
       break;
+
     case 1:
       c = nextChar();
-       if (isalpha(c) || isdigit(c) || c=='_') state = 1;
+      if (isalpha(c) || isdigit(c) || c=='_') state = 1;
       else if (c == ':') state = 3;
       else state = 2;
       break;
+
     case 4:
       c = nextChar();
       if (isdigit(c)) state = 4;
       else state = 5;
       break;
+
     case 6:
       c = nextChar();
       if (c == '\n') state = 6;
       else state = 7;
       break;
+
     case 2:
       rollBack();
       lex = getLexema();
       ttype = checkReserved(lex);
-      if (ttype != Token::ERR)
-	return new Token(ttype);
-      else
-	return new Token(Token::ID, getLexema()); 
+      if (ttype != Token::ERR) return new Token(ttype);
+      else return new Token(Token::ID, getLexema()); 
+
     case 3:
       rollBack();
       token = new Token(Token::LABEL,getLexema());
       nextChar();
       return token;
+
     case 5:
       rollBack();
       return new Token(Token::NUM,getLexema());
+
     case 7:
       rollBack();
       return new Token(Token::EOL);
+      
     default:
       cout << "Programming Error ... quitting" << endl;
       exit(0);
