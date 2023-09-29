@@ -64,14 +64,15 @@ Token* Scanner::nextToken() {
 
   startLexema();
   state = 0;
-
-  if (c == '%') {
-    cout << "% detected" << endl;
-    while (c != '\n')c = nextChar();
-    state = 0;
-  }
-
   while (1) {
+
+    // Manejando los comments
+    if (c == '%') {
+      cout << "% detected" << endl;
+      while (c != '\n')c = nextChar();
+      state = 0;
+    }
+
     switch (state) {
     case 0:
       if (isalpha(c)) { state = 1; }
