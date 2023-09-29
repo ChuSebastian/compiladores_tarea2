@@ -110,7 +110,7 @@ Token* Scanner::nextToken() {
       token = new Token(Token::LABEL,getLexema());
       nextChar();
       return token;
-
+      
     case 5:
       rollBack();
       return new Token(Token::NUM,getLexema());
@@ -118,13 +118,12 @@ Token* Scanner::nextToken() {
     case 7:
       rollBack();
       return new Token(Token::EOL);
-      
+
     default:
       cout << "Programming Error ... quitting" << endl;
       exit(0);
     }
   }
-
 }
 
 Scanner::~Scanner() { }
